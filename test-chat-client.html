@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Test Client</title>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            background: #f9f9f9;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 5px;
+            background: white;
+            border-radius: 4px;
+        }
+        .input-group {
+            margin: 10px 0;
+        }
+        input, select, button {
+            padding: 8px;
+            margin: 5px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .connected {
+            background: #d4edda;
+            color: #155724;
+        }
+        .disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chat Test Client</h1>
+        
+        <div id="status" class="status disconnected">Disconnected</div>
+        
+        <div class="input-group">
+            <input type="text" id="username" placeholder="Enter your username" />
+            <button onclick="registerUser()">Register</button>
+        </div>
+        
+        <div class="input-group">
+            <select id="messageType">
+                <option value="broadcast">Broadcast</option>
+                <option value="private">Private</option>
+                <option value="group">Group</option>
+            </select>
+            <input type="text" id="recipient" placeholder="Recipient (for private)" />
+            <input type="number" id="groupId" placeholder="Group ID (for group)" />
+        </div>
+        
+        <div class="input-group">
+            <input type="text" id="message" placeholder="Type your message..." style="width: 60%;" />
+            <button onclick="sendMessage()">Send</button>
+        </div>
+        
+        <div class="messages" id="messages"></div>
+        
+        <div class="input-group">
+            <button onclick="createGroup()">Create Group</button>
+            <button onclick="joinGroup()">Join Group</button>
+            <button onclick="listGroups()">List Groups</button>
+        </div>
+    </div>
+
+    <script>
+        const socket = io('http://localhost:3000');
+        let currentUsername = '';
+
+        socket.on('connect', () => {
+            document.getElementById('status').className = 'status connected';
+            document.getElementById('status').textContent = 'Connected ✅';
+            addMessage('System', 'Connected to server');
+        });
+
+        socket.on('disconnect', () => {
+            document.getElementById('status').className = 'status disconnected';
+            document.getElementById('status').textContent = 'Disconnected ❌';
+            addMessage('System', 'Disconnected from server');
+        });
+
+        socket.on('user:registered', (data) => {
+            addMessage('System', `Registered as ${data.data.username}`);
+        });
+
+        socket.on('user:connected', (data) => {
+            addMessage('System', `${data.username} joined the chat`);
+        });
+
+        socket.on('user:disconnected', (data) => {
+            addMessage('System', `${data.username} left the chat`);
+        });
+
+        socket.on('message:broadcast', (data) => {
+            addMessage(`[BROADCAST] ${data.username}`, data.message);
+        });
+
+        socket.on('message:private', (data) => {
+            addMessage(`[PRIVATE] ${data.username}`, data.message);
+        });
+
+        socket.on('message:group', (data) => {
+            addMessage(`[GROUP ${data.groupId}] ${data.username}`, data.message);
+        });
+
+        socket.on('group:created', (data) => {
+            addMessage('System', `Group created: ${data.groupName} (ID: ${data.id})`);
+        });
+
+        socket.on('group:member-joined', (data) => {
+            addMessage('System', `${data.username} joined group ${data.groupId}`);
+        });
+
+        function registerUser() {
+            const username = document.getElementById('username').value;
+            if (!username) {
+                alert('Please enter a username');
+                return;
+            }
+            currentUsername = username;
+            socket.emit('user:register', { username });
+        }
+
+        function sendMessage() {
+            const messageType = document.getElementById('messageType').value;
+            const message = document.getElementById('message').value;
+            
+            if (!currentUsername) {
+                alert('Please register first');
+                return;
+            }
+            if (!message) {
+                alert('Please enter a message');
+                return;
+            }
+
+            const data = {
+                username: currentUsername,
+                message: message
+            };
+
+            if (messageType === 'private') {
+                const recipient = document.getElementById('recipient').value;
+                if (!recipient) {
+                    alert('Please enter recipient username');
+                    return;
+                }
+                data.recipientUsername = recipient;
+                socket.emit('message:private', data);
+            } else if (messageType === 'group') {
+                const groupId = parseInt(document.getElementById('groupId').value);
+                if (!groupId) {
+                    alert('Please enter group ID');
+                    return;
+                }
+                data.groupId = groupId;
+                socket.emit('message:group', data);
+            } else {
+                socket.emit('message:broadcast', data);
+            }
+
+            document.getElementById('message').value = '';
+        }
+
+        function createGroup() {
+            const groupName = prompt('Enter group name:');
+            if (!groupName || !currentUsername) {
+                alert('Please register and enter group name');
+                return;
+            }
+            socket.emit('group:create', { groupName, createdBy: currentUsername });
+        }
+
+        function joinGroup() {
+            const groupId = parseInt(prompt('Enter group ID to join:'));
+            if (!groupId || !currentUsername) {
+                alert('Please register and enter group ID');
+                return;
+            }
+            socket.emit('group:join', { groupId, username: currentUsername });
+        }
+
+        function listGroups() {
+            socket.emit('group:list', {});
+            socket.once('group:list', (response) => {
+                const groups = response.data.groups;
+                const groupList = groups.map(g => `${g.id}: ${g.groupName} (${g.memberCount} members)`).join('\n');
+                alert('Available Groups:\n\n' + groupList);
+            });
+        }
+
+        function addMessage(sender, message) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        // Allow Enter key to send message
+        document.getElementById('message').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
+
