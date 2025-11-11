@@ -1,0 +1,8 @@
+# Locust Load Testing Dependencies
+# Install with: pip install -r requirements-locust.txt
+
+locust>=2.20.0
+python-socketio>=5.11.0
+websocket-client>=1.7.0
+requests>=2.31.0
+
