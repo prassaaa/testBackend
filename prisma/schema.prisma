@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// WEATHER MODULE
+// ============================================
+
+model WeatherData {
+  id           Int      @id @default(autoincrement())
+  city         String   @db.VarChar(100)
+  temperature  Float
+  weatherDesc  String   @map("weather_desc") @db.Text
+  collectedAt  DateTime @default(now()) @map("collected_at") @db.Timestamp(6)
+
+  @@index([collectedAt(sort: Desc)], name: "idx_weather_collected_at")
+  @@map("weather_data")
+}
+
+// ============================================
+// CHAT MODULE
+// ============================================
+
+model ChatMessage {
+  id                Int       @id @default(autoincrement())
+  username          String    @db.VarChar(100)
+  message           String    @db.Text
+  messageType       String    @map("message_type") @db.VarChar(20) // 'broadcast', 'private', 'group'
+  recipientUsername String?   @map("recipient_username") @db.VarChar(100)
+  groupId           Int?      @map("group_id")
+  sentAt            DateTime  @default(now()) @map("sent_at") @db.Timestamp(6)
+  isRead            Boolean   @default(false) @map("is_read")
+
+  group             ChatGroup? @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([messageType], name: "idx_chat_messages_type")
+  @@index([recipientUsername], name: "idx_chat_messages_recipient")
+  @@index([groupId], name: "idx_chat_messages_group")
+  @@index([sentAt(sort: Desc)], name: "idx_chat_messages_sent_at")
+  @@map("chat_messages")
+}
+
+model ChatGroup {
+  id        Int      @id @default(autoincrement())
+  groupName String   @map("group_name") @db.VarChar(100)
+  createdBy String   @map("created_by") @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  messages  ChatMessage[]
+  members   GroupMember[]
+
+  @@map("chat_groups")
+}
+
+model GroupMember {
+  id       Int      @id @default(autoincrement())
+  groupId  Int      @map("group_id")
+  username String   @db.VarChar(100)
+  joinedAt DateTime @default(now()) @map("joined_at") @db.Timestamp(6)
+
+  group    ChatGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, username])
+  @@index([groupId], name: "idx_group_members_group")
+  @@index([username], name: "idx_group_members_username")
+  @@map("group_members")
+}
