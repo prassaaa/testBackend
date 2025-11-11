@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { WeatherModule } from './modules/weather/weather.module';
 import { ChatModule } from './modules/chat/chat.module';
+import { HealthModule } from './health/health.module';
 import { CacheConfigService } from './config/cache.config';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
@@ -27,6 +28,7 @@ import redisConfig from './config/redis.config';
     DatabaseModule,
     WeatherModule,
     ChatModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
