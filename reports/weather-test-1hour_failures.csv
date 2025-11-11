@@ -1,0 +1,8 @@
+Method,Name,Error,Occurrences
+GET,/api/chat/messages/broadcast,CatchResponseError('Failed with status 0'),168
+POST,/api/chat/groups [POST],LocustBadStatusCode(code=400),150
+GET,/api/chat/messages/private,CatchResponseError('Failed with status 0'),166
+POST,/api/weather/fetch/[city],CatchResponseError('Failed with status 500'),7440
+GET,/api/health,CatchResponseError('Health check failed with status 0'),31773
+GET,/api/chat/groups [GET],CatchResponseError('Failed with status 0'),308
+POST,/api/weather/fetch/[city],CatchResponseError('Failed with status 201'),11303
