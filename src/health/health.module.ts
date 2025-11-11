@@ -8,4 +8,3 @@ import { DatabaseModule } from '../database/database.module';
   controllers: [HealthController],
 })
 export class HealthModule {}
-
