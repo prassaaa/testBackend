@@ -10,7 +10,7 @@ export class WeatherScheduler {
   constructor(private readonly weatherService: WeatherService) {}
 
   // Run every 15 minutes
-  @Cron(CronExpression.EVERY_10_MINUTES, {
+  @Cron('*/15 * * * *', {
     name: 'fetch-weather-data',
     timeZone: 'Asia/Jakarta',
   })
