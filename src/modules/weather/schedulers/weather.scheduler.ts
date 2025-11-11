@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { ConfigService } from '@nestjs/config';
 import { WeatherService } from '../services/weather.service';
 
 @Injectable()
@@ -8,10 +7,7 @@ export class WeatherScheduler {
   private readonly logger = new Logger(WeatherScheduler.name);
   private readonly targetCity: string = 'Jakarta';
 
-  constructor(
-    private readonly weatherService: WeatherService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly weatherService: WeatherService) {}
 
   // Run every 15 minutes
   @Cron(CronExpression.EVERY_10_MINUTES, {
