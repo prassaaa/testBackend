@@ -1,0 +1,349 @@
+{
+  "info": {
+    "name": "Backend Test - Demo Collection",
+    "description": "Collection untuk demo test case backend interview",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Health Check",
+      "item": [
+        {
+          "name": "GET Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/health",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "health"]
+            },
+            "description": "Check application health status"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Weather API",
+      "item": [
+        {
+          "name": "POST Fetch Jakarta",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/weather/fetch/Jakarta",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "weather", "fetch", "Jakarta"]
+            },
+            "description": "Manually trigger weather data fetch for Jakarta"
+          },
+          "response": []
+        },
+        {
+          "name": "POST Fetch Bandung",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/weather/fetch/Bandung",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "weather", "fetch", "Bandung"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Fetch Surabaya",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/weather/fetch/Surabaya",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "weather", "fetch", "Surabaya"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Current Jakarta",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/weather/current/Jakarta",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "weather", "current", "Jakarta"]
+            },
+            "description": "Get current weather for Jakarta (cached)"
+          },
+          "response": []
+        },
+        {
+          "name": "GET Current Bandung",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/weather/current/Bandung",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "weather", "current", "Bandung"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET History Jakarta - Page 1",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/weather/history/Jakarta?page=1&pageSize=5",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "weather", "history", "Jakarta"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "5"
+                }
+              ]
+            },
+            "description": "Get weather history with pagination"
+          },
+          "response": []
+        },
+        {
+          "name": "GET History Jakarta - Page 2",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/weather/history/Jakarta?page=2&pageSize=5",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "weather", "history", "Jakarta"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "2"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "5"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3. Chat API",
+      "item": [
+        {
+          "name": "POST Create Group - Developer Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupName\": \"Developer Team\",\n  \"createdBy\": \"Alice\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/chat/groups",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "chat", "groups"]
+            },
+            "description": "Create a new chat group"
+          },
+          "response": []
+        },
+        {
+          "name": "POST Create Group - QA Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupName\": \"QA Team\",\n  \"createdBy\": \"Bob\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/chat/groups",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "chat", "groups"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Join Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupId\": 1,\n  \"username\": \"Bob\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/chat/groups/join",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "chat", "groups", "join"]
+            },
+            "description": "Join an existing group"
+          },
+          "response": []
+        },
+        {
+          "name": "GET All Groups",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/chat/groups",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "chat", "groups"]
+            },
+            "description": "Get list of all chat groups"
+          },
+          "response": []
+        },
+        {
+          "name": "GET Group by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/chat/groups/1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "chat", "groups", "1"]
+            },
+            "description": "Get group details by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "GET Broadcast Messages",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/chat/messages/broadcast?limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "chat", "messages", "broadcast"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get broadcast message history"
+          },
+          "response": []
+        },
+        {
+          "name": "GET Private Messages - Alice & Bob",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/chat/messages/private?username1=Alice&username2=Bob&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "chat", "messages", "private"],
+              "query": [
+                {
+                  "key": "username1",
+                  "value": "Alice"
+                },
+                {
+                  "key": "username2",
+                  "value": "Bob"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get private message history between two users"
+          },
+          "response": []
+        },
+        {
+          "name": "GET Group Messages",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/chat/messages/group/1?limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "chat", "messages", "group", "1"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get group message history"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
+
